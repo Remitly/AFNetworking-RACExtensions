@@ -69,9 +69,14 @@
 		NSURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:path relativeToURL:self.baseURL] absoluteString] parameters:parameters];
 		
 		AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:nil failure:nil];
+
+        // All outstanding network requests should continue in the background until completion
+        [operation setShouldExecuteAsBackgroundTaskWithExpirationHandler:nil];
+
 		RACSignal* signal = [operation rac_overrideHTTPCompletionBlock];
-		[self.operationQueue addOperation:operation];
 		[signal subscribe:subscriber];
+
+		[self.operationQueue addOperation:operation];
 		return [RACDisposable disposableWithBlock:^{
 			[operation cancel];
 		}];
