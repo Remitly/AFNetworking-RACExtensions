@@ -66,7 +66,8 @@
 
 - (RACSignal *)rac_requestPath:(NSString *)path parameters:(NSDictionary *)parameters method:(NSString *)method {
 	return [RACSignal createSignal:^(id<RACSubscriber> subscriber) {
-		NSURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:path relativeToURL:self.baseURL] absoluteString] parameters:parameters];
+        NSString* url = [[NSURL URLWithString:path relativeToURL:self.baseURL] absoluteString];
+		NSURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:url parameters:parameters error:NULL];
 		
 		AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:nil failure:nil];
 
